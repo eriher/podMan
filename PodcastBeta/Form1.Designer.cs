@@ -128,6 +128,7 @@
             this.playingPic.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.playingPic.TabIndex = 0;
             this.playingPic.TabStop = false;
+            this.playingPic.Click += new System.EventHandler(this.playingPic_Click);
             // 
             // playingPod
             // 

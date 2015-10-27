@@ -51,16 +51,27 @@ namespace PodcastBeta
                 return !string.IsNullOrEmpty(json_data) ? JsonConvert.DeserializeObject<T>(json_data) : new T();
             }
         }
+        public Podcast getPlaying()
+        {
+            return playlist[currentIndex];
+        }
         public void startMediaPlay(int index)
         {
             currentIndex = index;
-            var epInfo = PlayerContainer.Controls["groupBox1"] as GroupBox;
-            (epInfo.Controls["playingPic"] as PictureBox).ImageLocation = playlist[index].image_url;
-            (epInfo.Controls["playingPic"] as PictureBox).LoadAsync(playlist[index].image_url);
-            (epInfo.Controls["playingPic"] as PictureBox).Tag = playlist[index];
-            (epInfo.Controls["playingPod"] as TextBox).Text = playlist[index].title;
-            (epInfo.Controls["playingEp"] as TextBox).Text = playlist[index].recent_episodes[0].title;
             ((PlayerContainer.Controls["groupBox2"] as GroupBox).Controls["mediaPlayer"] as AxWMPLib.AxWindowsMediaPlayer).URL = playlist[index].recent_episodes[0].audio_url;
+        }
+        public void updatePlayingInfo()
+        {
+            foreach (Podcast p in playlist)
+                if (p.recent_episodes[0].audio_url == ((PlayerContainer.Controls["groupBox2"] as GroupBox).Controls["mediaPlayer"] as AxWMPLib.AxWindowsMediaPlayer).currentMedia.sourceURL) {
+                    
+                    var epInfo = PlayerContainer.Controls["groupBox1"] as GroupBox;
+                    (epInfo.Controls["playingPic"] as PictureBox).ImageLocation = p.image_url;
+                    (epInfo.Controls["playingPic"] as PictureBox).LoadAsync(p.image_url);
+                    (epInfo.Controls["playingPic"] as PictureBox).Tag = p;
+                    (epInfo.Controls["playingPod"] as TextBox).Text = p.title;
+                    (epInfo.Controls["playingEp"] as TextBox).Text = p.recent_episodes[0].title;
+                }
         }
         public void addToPlaylist(Podcast pod)
         {

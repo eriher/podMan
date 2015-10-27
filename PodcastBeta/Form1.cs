@@ -25,7 +25,23 @@ namespace PodcastBeta
             if (PodMan.Instance.SubscribedPods.Count == 0)
                 tabControl1.SelectedIndex++;
             button1.BringToFront();
+            mediaPlayer.PlayStateChange += MediaPlayer_PlayStateChange;
         }
+
+        private void MediaPlayer_PlayStateChange(object sender, AxWMPLib._WMPOCXEvents_PlayStateChangeEvent e)
+        {
+            // Test the current state of the player and display a message for each state.
+            switch (e.newState)
+            {
+                case 3:    // Playing
+                    PodMan.Instance.updatePlayingInfo();
+                    break;
+                case 9:    // MediaEnded
+                    PodMan.Instance.updatePlayingInfo();
+                    break;
+            }
+        }
+
         private void Sub_Init()
         {
             pl = new Podlist("Subscribed Pods", PodMan.Instance.SubscribedPods.ToArray(), false);
@@ -76,6 +92,14 @@ namespace PodcastBeta
         private void playlist_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             PodMan.Instance.startMediaPlay(playlist.CurrentRow.Index);
+        }
+
+        private void playingPic_Click(object sender, EventArgs e)
+        {
+            tabControl1.SelectedIndex = 0;
+            PodInfo uc = new PodInfo(PodMan.Instance.getPlaying().podcast_id);
+            tabPage1.Controls.Add(uc);
+            uc.BringToFront();
         }
     }
 }
